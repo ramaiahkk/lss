@@ -1,20 +1,14 @@
 package com.takoit.utils.lss.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class LSValue {
-    public LSValue(){
-
-    }
-    public LSValue(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
+    @Getter
+    @Setter
     private String value;
 }
