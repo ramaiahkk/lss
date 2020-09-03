@@ -14,7 +14,13 @@ public class LCSRequestValidator implements ConstraintValidator<ValidateLCS, Lis
 
     @Override
     public boolean isValid(List<SetOfString> setOfStrings, ConstraintValidatorContext constraintValidatorContext) {
-        return setOfStrings.stream().filter(x -> x == null || x.getValue() == null || x.getValue().length() == 0).map(x -> x.getValue()).collect(Collectors.toSet()).size() != setOfStrings.size();
+        boolean result = false;
+        if(setOfStrings != null && setOfStrings.size()>0){
+            result = setOfStrings.stream().filter(x -> x != null && x.getValue() != null )
+                    .map(x -> x.getValue()).collect(Collectors.toSet()).size() == setOfStrings.size();
+        }
+
+        return result;
     }
 
 }

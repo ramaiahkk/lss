@@ -11,6 +11,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 
@@ -23,9 +24,48 @@ public class LSControllerTest {
     private TestRestTemplate restTemplate;
 
     @Test
+    public void getFaileResponse() throws Exception {
+
+        LCSRequest request = new LCSRequest();
+        request.setSetOfStrings(new ArrayList<>());
+        request.getSetOfStrings().add(new SetOfString("comcast"));
+        request.getSetOfStrings().add(new SetOfString("comcast"));
+        request.getSetOfStrings().add(new SetOfString("broadcaster"));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accepts", "application/json");
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<LCSRequest> lcsRequestHttpEntity = new HttpEntity<>(request, headers);
+        System.out.println(restTemplate.postForEntity("http://localhost:" + port + "/lcs", lcsRequestHttpEntity, LCSResponse.class));
+        ResponseEntity<LCSResponse> ls=restTemplate.postForEntity("http://localhost:" + port + "/lcs", lcsRequestHttpEntity, LCSResponse.class);
+        Assertions.assertTrue(ls.getStatusCode().value()==400);
+
+
+    }
+
+    @Test
+    public void getFaileResponseforBlank() throws Exception {
+
+        LCSRequest request = new LCSRequest();
+        request.setSetOfStrings(new ArrayList<>());
+        request.getSetOfStrings().add(new SetOfString("comcast"));
+        request.getSetOfStrings().add(new SetOfString("comcastsdfs"));
+        request.getSetOfStrings().add(new SetOfString(""));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accepts", "application/json");
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<LCSRequest> lcsRequestHttpEntity = new HttpEntity<>(request, headers);
+        System.out.println(restTemplate.postForEntity("http://localhost:" + port + "/lcs", lcsRequestHttpEntity, LCSResponse.class));
+        ResponseEntity<LCSResponse> ls=restTemplate.postForEntity("http://localhost:" + port + "/lcs", lcsRequestHttpEntity, LCSResponse.class);
+        Assertions.assertTrue(ls.getStatusCode().value()==400);
+
+
+    }
+    @Test
     public void getResponse() throws Exception {
 
-        LCSRequest request= new LCSRequest();
+        LCSRequest request = new LCSRequest();
         request.setSetOfStrings(new ArrayList<>());
         request.getSetOfStrings().add(new SetOfString("comcast"));
         request.getSetOfStrings().add(new SetOfString("comcastic"));
@@ -35,13 +75,12 @@ public class LSControllerTest {
         headers.set("Content-Type", "application/json");
 
         HttpEntity<LCSRequest> lcsRequestHttpEntity = new HttpEntity<>(request, headers);
-        System.out.println(restTemplate.postForEntity("http://localhost:" + port + "/lcs", lcsRequestHttpEntity, LCSResponse.class));
-
 
         LCSResponse lcsResponse = restTemplate.postForEntity("http://localhost:" + port + "/lcs", lcsRequestHttpEntity, LCSResponse.class).getBody();
         Assertions.assertTrue(lcsResponse != null);
-        Assertions.assertTrue(lcsResponse .getLcs().get(0)!=null);
-        Assertions.assertTrue(lcsResponse .getLcs().get(0).getValue().equals("cast"));
+        Assertions.assertTrue(lcsResponse.getLcs().get(0) != null);
+        Assertions.assertTrue(lcsResponse.getLcs().get(0).getValue().equals("cast"));
 
     }
+
 }
